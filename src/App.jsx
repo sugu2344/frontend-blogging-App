@@ -1,11 +1,31 @@
-import React from "react";
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import { createBrowserRouter, RouterProvider } from "react-router";
+
+const routes = [
+  {
+    path: "/",
+    element: <h1>hello world</h1>,
+  },
+];
+const router = createBrowserRouter(routes, {
+  future: {
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true,
+  },
+});
 
 const App = () => {
   return (
-    <div>
-      <h1>hello world</h1>
-      <p>hello world</p>
-    </div>
+    <RouterProvider
+      router={router}
+      future={{
+        v7_startTransition: true,
+      }}
+    />
   );
 };
 
