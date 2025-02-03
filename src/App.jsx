@@ -1,9 +1,13 @@
 import React from "react";
+import Layout from "./layouts/layout";
+import { Outlet } from "react-router";
 
 const App = () => {
   return (
     <div>
-      <h1>app</h1>
+      <Layout>
+        <Outlet />
+      </Layout>
     </div>
   );
 };
