@@ -34,7 +34,9 @@ const Register = () => {
         dispatch(setPassword(""));
 
         // Redirect to the login page
-        navigate("/login");
+        setTimeout(() => {
+          navigate("/login");
+        }, 5000);
       }
     } catch (error) {
       toast.error(error.response.data.message);
