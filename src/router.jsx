@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
-import List from "./pages/list";
+import Home from "./pages/home";
 import Register from "./pages/register";
 import Login from "./pages/login";
 const routes = [
@@ -10,7 +10,7 @@ const routes = [
     children: [
       {
         path: "",
-        element: <List />,
+        element: <Home />,
       },
       {
         path: "register",
