@@ -6,14 +6,15 @@ import Layout from "./layouts/layout";
 import { Outlet } from "react-router-dom";
 
 const App = () => {
-  const user = useLoaderData();
-  const dispatch = useDispatch();
+  // const user = useLoaderData();
+  // const dispatch = useDispatch();
+  // console.log(user);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(setUser(user));
-    }
-  }, [user, dispatch]);
+  // useEffect(() => {
+  //   if (user) {
+  //     dispatch(setUser(user));
+  //   }
+  // }, [user, dispatch]);
 
   return (
     <div>

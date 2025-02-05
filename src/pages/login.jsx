@@ -1,65 +1,53 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  selectEmail,
-  selectPassword,
-  setEmail,
-  setPassword,
-} from "../redux/features/auth/loginSlice";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import authServices from "../services/authServices";
 
 const Login = () => {
-  const email = useSelector(selectEmail);
-  const password = useSelector(selectPassword);
-
-  const dispatch = useDispatch();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setError(null);
     try {
       const response = await authServices.login({ email, password });
-
-      if (response.status === 201) {
-        toast.success("Logged in successfully");
-
-        // clear the form
-        dispatch(setEmail(""));
-        dispatch(setPassword(""));
-
-        // redirect to home page
-        setTimeout(() => {
-          navigate("/");
-        }, 500);
-      }
+      localStorage.setItem("token", response.data.token);
+      console.log(response);
+      navigate("/profile");
     } catch (error) {
-      toast.error(error.response.data.message);
+      setError(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="max-w-xs mx-auto mt-20 p-4 border rounded">
-      <h2 className="text-xl mb-4">Login</h2>
-      <form className="flex flex-col space-y-3" onSubmit={handleLogin}>
+    <div className="flex justify-center items-center h-screen">
+      <form onSubmit={handleLogin} className="bg-gray-100 p-6 rounded-lg">
+        <h2 className="text-xl font-semibold mb-4">Login</h2>
+        {error && <p className="text-red-500">{error}</p>}
         <input
-          name="email"
           type="email"
           placeholder="Email"
-          className="border p-2 rounded"
           value={email}
-          onChange={(e) => dispatch(setEmail(e.target.value))}
+          onChange={(e) => setEmail(e.target.value)}
+          className="block w-full p-2 mb-3 border rounded"
+          required
         />
         <input
-          name="password"
           type="password"
           placeholder="Password"
-          className="border p-2 rounded"
           value={password}
-          onChange={(e) => dispatch(setPassword(e.target.value))}
+          onChange={(e) => setPassword(e.target.value)}
+          className="block w-full p-2 mb-3 border rounded"
+          required
         />
-        <button className="bg-blue-500 text-white py-2 rounded">Login</button>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded"
+        >
+          Login
+        </button>
       </form>
     </div>
   );
