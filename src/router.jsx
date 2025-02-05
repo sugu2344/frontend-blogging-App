@@ -3,10 +3,13 @@ import App from "./App";
 import Home from "./pages/home";
 import Register from "./pages/register";
 import Login from "./pages/login";
+import authLoader from "./loaders/unit/authLoader";
+import Profile from "./pages/userprofile";
 const routes = [
   {
     path: "/",
     element: <App />,
+    loader: authLoader,
     children: [
       {
         path: "",
@@ -20,7 +23,12 @@ const routes = [
         path: "login",
         element: <Login />,
       },
+      {
+        path: "profile",
+        element: <Profile/>,
+      },
     ],
+    hydrateFallbackElement: <p>loading....</p>,
   },
 ];
 const router = createBrowserRouter(routes, {

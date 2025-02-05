@@ -13,7 +13,7 @@ const authServices = {
     return await instance.get("/logout");
   },
   //profile
-  me: async () => {
+  profile: async () => {
     return await instance.get("/profile");
   },
 };
