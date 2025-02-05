@@ -2,18 +2,22 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectUser } from "../redux/features/auth/userSlice";
+
 const Profile = () => {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
+
   useEffect(() => {
     console.log("User in Profile Component:", user);
     if (!user) {
       navigate("/login", { replace: true });
     }
   }, [user, navigate]);
+
   if (!user) {
     return null;
   }
+
   return (
     <div>
       <h1 className="text-center text-3xl font-semibold mt-10">
@@ -38,4 +42,5 @@ const Profile = () => {
     </div>
   );
 };
+
 export default Profile;
