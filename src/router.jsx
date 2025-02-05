@@ -5,6 +5,11 @@ import Register from "./pages/register";
 import Login from "./pages/login";
 import authLoader from "./loaders/unit/authLoader";
 import Profile from "./pages/userprofile";
+import Logout from "./pages/logout";
+import UserLayout from "./layouts/userlayout";
+import UserDashboard from "./pages/user/userdashboard";
+import AdminLayout from "./layouts/adminLayout";
+import AdminDashboard from "./pages/admin/admindashboard";
 const routes = [
   {
     path: "/",
@@ -26,6 +31,33 @@ const routes = [
       {
         path: "profile",
         element: <Profile />,
+      },
+      {
+        path: "logout",
+        element: <Logout />,
+      },
+      //
+      {
+        path: "user",
+        element: <UserLayout />,
+        loader: authLoader,
+        children: [
+          {
+            path: "userDashboard",
+            element: <UserDashboard />,
+          },
+        ],
+      },
+      {
+        path: "admin",
+        element: <AdminLayout />,
+        loader: authLoader,
+        children: [
+          {
+            path: "adminDashboard",
+            element: <AdminDashboard />,
+          },
+        ],
       },
     ],
     hydrateFallbackElement: <p>loading....</p>,
