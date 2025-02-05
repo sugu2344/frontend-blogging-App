@@ -5,18 +5,15 @@ import { selectUser } from "../redux/features/auth/userSlice";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
+  const user = useSelector(selectUser)?.user;
 
   useEffect(() => {
-    console.log("User in Profile Component:", user);
     if (!user) {
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [user, navigate]);
 
-  if (!user) {
-    return null;
-  }
+  if (!user) return null;
 
   return (
     <div>
@@ -27,15 +24,9 @@ const Profile = () => {
         <div className="w-1/3">
           <div className="bg-gray-200 p-4 rounded-lg">
             <h2 className="text-xl font-semibold">User Details</h2>
-            <p className="mt-2">
-              <strong>Name:</strong> {user.name}
-            </p>
-            <p className="mt-2">
-              <strong>Email:</strong> {user.email}
-            </p>
-            <p className="mt-2">
-              <strong>Role:</strong> {user.role}
-            </p>
+            <p className="mt-2">Name: {user.name}</p>
+            <p className="mt-2">Email: {user.email}</p>
+            <p className="mt-2">Role: {user.role}</p>
           </div>
         </div>
       </div>
