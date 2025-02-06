@@ -12,6 +12,7 @@ import AdminLayout from "./layouts/adminLayout";
 import AdminDashboard from "./pages/admin/admindashboard";
 // import CreatePost from "./pages/blog";
 import CreateBlogPost from "./pages/blog";
+import ViewAllBlog from "./pages/viewallblog";
 const routes = [
   {
     path: "/",
@@ -50,7 +51,11 @@ const routes = [
           },
           {
             path: "createblog",
-            element: <CreateBlogPost/>,
+            element: <CreateBlogPost />,
+          },
+          {
+            path: "ViewAllBlogs",
+            element: <ViewAllBlog />,
           },
         ],
       },
@@ -65,7 +70,11 @@ const routes = [
           },
           {
             path: "createblog",
-            element: <CreateBlogPost/>,
+            element: <CreateBlogPost />,
+          },
+          {
+            path: "ViewAllBlogs",
+            element: <ViewAllBlog />,
           },
         ],
       },

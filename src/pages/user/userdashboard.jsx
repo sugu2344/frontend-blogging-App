@@ -7,9 +7,16 @@ const UserDashboard = () => {
   return (
     <div>
       <h1>User Dashboard Page</h1>
-      <button onClick={() => navigate("/user/createblog")}>
-        Create Blog Post
-      </button>
+      <div>
+        <button onClick={() => navigate("/user/createblog")}>
+          Create Blog Post
+        </button>
+      </div>
+      <div>
+        <button onClick={() => navigate("/user/ViewAllBlogs")}>
+          All Blogs
+        </button>
+      </div>
     </div>
   );
 };

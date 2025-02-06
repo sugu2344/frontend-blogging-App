@@ -5,9 +5,16 @@ const AdminDashboard = () => {
   return (
     <div>
       <p>admin dashboard Page</p>
-      <button onClick={() => navigate("/admin/createblog")}>
-        Create Blog Post
-      </button>
+      <div>
+        <button onClick={() => navigate("/admin/createblog")}>
+          Create Blog Post
+        </button>
+      </div>
+      <div>
+        <button onClick={() => navigate("/admin/ViewAllBlogs")}>
+          All Blogs
+        </button>
+      </div>
     </div>
   );
 };
