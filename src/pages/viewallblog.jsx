@@ -9,10 +9,13 @@ const ViewAllBlog = () => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
-  // State for editing
+  // State for editing posts and comments
   const [editingPost, setEditingPost] = useState(null);
   const [updatedTitle, setUpdatedTitle] = useState("");
   const [updatedContent, setUpdatedContent] = useState("");
+
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editedComment, setEditedComment] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,35 +52,32 @@ const ViewAllBlog = () => {
     };
 
     fetchData();
-  }, []); // ✅ No dependency on `posts`
+  }, []);
 
-const handleSubmitComment = async (postId) => {
-  try {
-    const token = localStorage.getItem("token");
-    const response = await axios.post(
-      "http://127.0.0.1:7777/comment/createComment",
-      { postId, content: newComment },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+  // Handle comment submit
+  const handleSubmitComment = async (postId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://127.0.0.1:7777/comment/createComment",
+        { postId, content: newComment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    // Reset the comment input field
-    setNewComment("");
+      setNewComment("");
+      const updatedComments = await axios.get(
+        `http://127.0.0.1:7777/comment/getCommentsByPost/${postId}`
+      );
+      setComments((prevComments) => ({
+        ...prevComments,
+        [postId]: updatedComments.data,
+      }));
+    } catch (error) {
+      setError("Error posting comment");
+    }
+  };
 
-    // Fetch updated comments for this post
-    const updatedComments = await axios.get(
-      `http://127.0.0.1:7777/comment/getCommentsByPost/${postId}`
-    );
-
-    setComments((prevComments) => ({
-      ...prevComments,
-      [postId]: updatedComments.data, // Update comments for the specific post
-    }));
-  } catch (error) {
-    setError("Error posting comment");
-  }
-};
-
-
+  // Handle delete post
   const handleDeletePost = async (postId) => {
     try {
       const token = localStorage.getItem("token");
@@ -91,41 +91,95 @@ const handleSubmitComment = async (postId) => {
     }
   };
 
-  // Handle Edit Mode
+  // Handle edit post
   const handleEditPost = (post) => {
     setEditingPost(post._id);
     setUpdatedTitle(post.title);
     setUpdatedContent(post.content);
   };
 
-  // Handle Updating the Post
+  // Handle updating the post
   const handleUpdatePost = async (postId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.put(
+      await axios.put(
         `http://127.0.0.1:7777/post/update/${postId}`,
         { title: updatedTitle, content: updatedContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Update response:", response.data);
-
-      // ✅ Update state correctly
-     setPosts((prevPosts) =>
-       prevPosts.map((post) =>
-         post._id === postId
-           ? { ...post, title: updatedTitle, content: updatedContent }
-           : post
-       )
-     );
-
-
-      // ✅ Reset editing state
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === postId
+            ? { ...post, title: updatedTitle, content: updatedContent }
+            : post
+        )
+      );
       setEditingPost(null);
     } catch (error) {
       setError("Error updating post");
     }
   };
 
+  // Handle edit comment
+  const handleEditComment = (commentId) => {
+    setEditingCommentId(commentId);
+    const commentToEdit = Object.values(comments)
+      .flat()
+      .find((comment) => comment._id === commentId);
+    setEditedComment(commentToEdit.content);
+  };
+
+  // Handle updating the comment
+  const handleUpdateComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `http://127.0.0.1:7777/comment/updateComment/${commentId}`,
+        { content: editedComment },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Update the comment in the state after a successful update
+      setComments((prevComments) => {
+        const updatedComments = prevComments;
+        Object.keys(updatedComments).forEach((postId) => {
+          updatedComments[postId] = updatedComments[postId].map((comment) =>
+            comment._id === commentId
+              ? { ...comment, content: editedComment }
+              : comment
+          );
+        });
+        return { ...updatedComments };
+      });
+
+      setEditingCommentId(null); // Reset editing state
+      setEditedComment(""); // Clear the edit comment field
+    } catch (error) {
+      setError("Error updating comment");
+    }
+  };
+const handleDeleteComment = async (commentId) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.delete(
+      `http://127.0.0.1:7777/comment/deleteComment/${commentId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    // Remove the deleted comment from state
+    setComments((prevComments) => {
+      const updatedComments = { ...prevComments };
+      Object.keys(updatedComments).forEach((postId) => {
+        updatedComments[postId] = updatedComments[postId].filter(
+          (comment) => comment._id !== commentId
+        );
+      });
+      return updatedComments;
+    });
+  } catch (error) {
+    setError("Error deleting comment");
+  }
+};
   if (loading) return <div className="text-center text-lg">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
@@ -139,7 +193,6 @@ const handleSubmitComment = async (postId) => {
               key={post._id}
               className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 p-4"
             >
-              {/* If in Edit Mode */}
               {editingPost === post._id ? (
                 <div>
                   <input
@@ -177,7 +230,6 @@ const handleSubmitComment = async (postId) => {
                   <p className="text-sm text-gray-500">
                     <strong>Author:</strong> {post.author.name}
                   </p>
-
                   {user && user._id === post.author._id && (
                     <div className="flex space-x-2 mt-3">
                       <button
@@ -197,15 +249,56 @@ const handleSubmitComment = async (postId) => {
                 </>
               )}
 
-              {/* Comments Section */}
               <div className="mt-6">
                 <h3 className="text-lg font-semibold">Comments:</h3>
                 <ul>
                   {comments[post._id]?.length > 0 ? (
                     comments[post._id].map((comment) => (
                       <li key={comment._id} className="mb-2">
-                        <strong>{comment.userId.username}</strong>:{" "}
-                        {comment.content}
+                        {editingCommentId === comment._id ? (
+                          <div>
+                            <textarea
+                              value={editedComment}
+                              onChange={(e) => setEditedComment(e.target.value)}
+                              className="w-full p-2 border rounded mt-2"
+                              placeholder="Edit your comment..."
+                            ></textarea>
+                            <button
+                              onClick={() => handleUpdateComment(comment._id)}
+                              className="mt-2 p-2 bg-green-500 text-white rounded"
+                            >
+                              Update
+                            </button>
+                            <button
+                              onClick={() => setEditingCommentId(null)}
+                              className="mt-2 p-2 bg-gray-500 text-white rounded ml-2"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <strong>{comment.userId.username}</strong>{" "}
+                            
+                            {comment.content}
+                          </>
+                        )}
+                        {user && user._id === comment.userId._id && (
+                          <div className="flex space-x-2 mt-2">
+                            <button
+                              onClick={() => handleEditComment(comment._id)}
+                              className="bg-yellow-500 text-white px-4 py-1 rounded"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteComment(comment._id)}
+                              className="bg-red-500 text-white px-4 py-1 rounded"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </li>
                     ))
                   ) : (
@@ -213,7 +306,6 @@ const handleSubmitComment = async (postId) => {
                   )}
                 </ul>
 
-                {/* Add Comment Form */}
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
@@ -224,14 +316,14 @@ const handleSubmitComment = async (postId) => {
                   onClick={() => handleSubmitComment(post._id)}
                   className="mt-2 p-2 bg-blue-500 text-white rounded"
                 >
-                  Post Comment
+                  Add Comment
                 </button>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500">No posts available</p>
+        <p>No posts available</p>
       )}
     </div>
   );
