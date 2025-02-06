@@ -17,6 +17,11 @@ const UserDashboard = () => {
           All Blogs
         </button>
       </div>
+      <div>
+        <button onClick={() => navigate("/user/allUsers")}>
+          All users page
+        </button>
+      </div>
     </div>
   );
 };

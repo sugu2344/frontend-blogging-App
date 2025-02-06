@@ -15,6 +15,11 @@ const AdminDashboard = () => {
           All Blogs
         </button>
       </div>
+      <div>
+        <button onClick={() => navigate("/admin/allUsers")}>
+          All users page
+        </button>
+      </div>
     </div>
   );
 };
