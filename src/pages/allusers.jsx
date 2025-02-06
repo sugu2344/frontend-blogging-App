@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Spin, Alert, Button, Modal, List } from "antd";
+import { Table, Spin, Alert, Button, Modal, List, message } from "antd";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -9,28 +9,49 @@ const AllUsers = () => {
   const [blogs, setBlogs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [subscriptions, setSubscriptions] = useState({}); // Stores subscription statuses
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://127.0.0.1:7777/user/getallusers",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setUsers(response.data);
-      } catch (err) {
-        setError(err.response?.data?.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUsers();
+    fetchSubscriptions();
   }, []);
 
-  // Fetch user blogs
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://127.0.0.1:7777/user/getallusers",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setUsers(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSubscriptions = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "http://127.0.0.1:7777/subscription/getall",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const subscriptionMap = {};
+      response.data.forEach((sub) => {
+        subscriptionMap[sub.blogger] = sub._id; // Map bloggerId to subscriptionId
+      });
+      setSubscriptions(subscriptionMap);
+    } catch (err) {
+      console.error("Error fetching subscriptions:", err);
+    }
+  };
+
   const fetchBlogs = async (userId, userName) => {
     try {
       setLoading(true);
@@ -47,7 +68,37 @@ const AllUsers = () => {
     }
   };
 
-  // Table columns
+  const handleSubscribe = async (bloggerId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://127.0.0.1:7777/subscription/subscribe",
+        { bloggerId, category: "General" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      message.success("Subscribed successfully!");
+      fetchSubscriptions();
+    } catch (err) {
+      message.error("Failed to subscribe");
+    }
+  };
+
+  const handleUnsubscribe = async (subscriptionId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `http://127.0.0.1:7777/subscription/unsubscribe/${subscriptionId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      message.success("Unsubscribed successfully!");
+      fetchSubscriptions();
+    } catch (err) {
+      message.error("Failed to unsubscribe");
+    }
+  };
+
   const columns = [
     {
       title: "Name",
@@ -75,6 +126,27 @@ const AllUsers = () => {
       dataIndex: "role",
       key: "role",
     },
+    {
+      title: "Status",
+      key: "status",
+      render: (record) => (
+        <>
+          {subscriptions[record._id] ? (
+            <Button
+              type="primary"
+              danger
+              onClick={() => handleUnsubscribe(subscriptions[record._id])}
+            >
+              Unsubscribe
+            </Button>
+          ) : (
+            <Button type="primary" onClick={() => handleSubscribe(record._id)}>
+              Subscribe
+            </Button>
+          )}
+        </>
+      ),
+    },
   ];
 
   if (loading) return <Spin size="large" />;
@@ -89,7 +161,6 @@ const AllUsers = () => {
         pagination={false}
       />
 
-      {/* Modal for displaying blogs */}
       <Modal
         title={`Blogs by ${selectedUser}`}
         open={isModalVisible}
