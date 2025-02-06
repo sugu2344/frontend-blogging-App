@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 
-const CreatePost = () => {
+const CreateBlogPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
@@ -108,4 +108,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default CreateBlogPost;
