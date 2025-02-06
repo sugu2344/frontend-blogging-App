@@ -5,6 +5,7 @@ import {
   setPassword,
   setEmail,
 } from "../redux/features/auth/loginSlice";
+import { setUser } from "../redux/features/auth/userSlice"; //1
 import { useDispatch, useSelector } from "react-redux";
 import authServices from "../services/authServices";
 import { useNavigate } from "react-router-dom";
@@ -19,23 +20,40 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await authServices.login({ email, password });
+      const response = await authServices.login({
+        email,
+        password,
+      });
 
-      if (response.status === 200) {
+      const data = response.data;
+      console.log(data);
+
+      if (data.token) {
         toast.success("Logged in successfully");
-        localStorage.setItem("token", response.data.token);
+
+        // Store token in localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        dispatch(setUser(data.user));
+        // Clear input fields
         dispatch(setEmail(""));
         dispatch(setPassword(""));
-        navigate("/");
-        window.location.reload();
+
+        console.log("User Role:", data.user?.role);
+
+        // Navigate based on role
+        if (data.user?.role === "admin") {
+          navigate("/admin/adminDashboard");
+        } else {
+          navigate("/user/userDashboard");
+        }
       } else {
-        toast.error(response.data.message);
+        console.log("Login failed:", data.message);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     }
   };
-
   return (
     <div className="max-w-xs mx-auto mt-10 bg-white p-5 rounded-md shadow-md">
       <h2 className="text-xl mb-4">Login</h2>

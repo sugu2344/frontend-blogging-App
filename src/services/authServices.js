@@ -16,10 +16,10 @@ const authServices = {
   profile: async () => {
     return await instance.get("/profile");
   },
-  //logout
-  logout: async () => {
-    return await instance.post("/logout");
-  },
+  // //logout
+  // logout: async () => {
+  //   return await instance.post("/logout");
+  // },
 };
 
 export default authServices;

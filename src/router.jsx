@@ -15,7 +15,7 @@ const routes = [
   {
     path: "/",
     element: <App />,
-    loader: authLoader,
+    // loader: authLoader,
     children: [
       {
         path: "",
