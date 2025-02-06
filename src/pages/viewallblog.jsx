@@ -51,20 +51,32 @@ const ViewAllBlog = () => {
     fetchData();
   }, []); // ✅ No dependency on `posts`
 
-  const handleSubmitComment = async (postId) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        "http://127.0.0.1:7777/comment/createComment",
-        { postId, content: newComment },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+const handleSubmitComment = async (postId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.post(
+      "http://127.0.0.1:7777/comment/createComment",
+      { postId, content: newComment },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      setNewComment("");
-    } catch (error) {
-      setError("Error posting comment");
-    }
-  };
+    // Reset the comment input field
+    setNewComment("");
+
+    // Fetch updated comments for this post
+    const updatedComments = await axios.get(
+      `http://127.0.0.1:7777/comment/getCommentsByPost/${postId}`
+    );
+
+    setComments((prevComments) => ({
+      ...prevComments,
+      [postId]: updatedComments.data, // Update comments for the specific post
+    }));
+  } catch (error) {
+    setError("Error posting comment");
+  }
+};
+
 
   const handleDeletePost = async (postId) => {
     try {
