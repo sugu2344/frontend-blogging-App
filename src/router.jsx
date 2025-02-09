@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/admin/admindashboard";
 import CreateBlogPost from "./pages/blog";
 import ViewAllBlog from "./pages/viewallblog";
 import AllUsers from "./pages/allusers";
+import GetProfile from "./pages/getprofile";
 const routes = [
   {
     path: "/",
@@ -62,6 +63,10 @@ const routes = [
             path: "allUsers",
             element: <AllUsers />,
           },
+          {
+            path: "getprofile",
+            element: <GetProfile />,
+          },
         ],
       },
       {
@@ -84,6 +89,10 @@ const routes = [
           {
             path: "allUsers",
             element: <AllUsers />,
+          },
+          {
+            path: "getprofile",
+            element: <GetProfile />,
           },
         ],
       },

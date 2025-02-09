@@ -20,6 +20,11 @@ const AdminDashboard = () => {
           All users page
         </button>
       </div>
+      <div>
+        <button onClick={() => navigate("/admin/getprofile")}>
+        get profile
+        </button>
+      </div>
     </div>
   );
 };

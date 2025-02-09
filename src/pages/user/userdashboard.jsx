@@ -22,6 +22,11 @@ const UserDashboard = () => {
           All users page
         </button>
       </div>
+      <div>
+        <button onClick={() => navigate("/user/getprofile")}>
+          get profile
+        </button>
+      </div>
     </div>
   );
 };
