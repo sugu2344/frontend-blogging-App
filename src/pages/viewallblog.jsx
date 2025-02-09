@@ -90,15 +90,24 @@ const ViewAllBlog = () => {
   }, [posts]);
 
   // Filter posts based on selected category and tag
-  useEffect(() => {
-    if (selectedCategory) {
-      setFilteredPosts(
-        posts.filter((post) => post.categories.includes(selectedCategory))
-      );
-    } else {
-      setFilteredPosts(posts);
-    }
-  }, [selectedCategory, posts]);
+ useEffect(() => {
+   let filtered = posts;
+
+   if (selectedCategory) {
+     filtered = filtered.filter(
+       (post) => post.categories && post.categories.includes(selectedCategory)
+     );
+   }
+
+   if (selectedTag) {
+     filtered = filtered.filter(
+       (post) => post.tags && post.tags.includes(selectedTag)
+     );
+   }
+
+   setFilteredPosts(filtered);
+ }, [selectedCategory, selectedTag, posts]);
+
 
   // Handle comment submit
   const handleSubmitComment = async (postId) => {
