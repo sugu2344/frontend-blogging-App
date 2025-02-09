@@ -1,8 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { selectUser } from "../../redux/features/auth/userSlice";
+import { useSelector } from "react-redux";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
 
   return (
     <div>
@@ -26,6 +29,9 @@ const UserDashboard = () => {
         <button onClick={() => navigate("/user/getprofile")}>
           get profile
         </button>
+      </div>
+      <div>
+        <h1>Welcome {user?.user.name || "Guest"}</h1>
       </div>
     </div>
   );
