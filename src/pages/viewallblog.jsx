@@ -13,10 +13,16 @@ const ViewAllBlog = () => {
   const [editingPost, setEditingPost] = useState(null);
   const [updatedTitle, setUpdatedTitle] = useState("");
   const [updatedContent, setUpdatedContent] = useState("");
-
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [updatedTags, setUpdatedTags] = useState([]);
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editedComment, setEditedComment] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedTag, setSelectedTag] = useState("");
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
+  // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +39,16 @@ const ViewAllBlog = () => {
 
         const postsResponse = await axios.get("http://127.0.0.1:7777/post/get");
         setPosts(postsResponse.data);
-
+        setFilteredPosts(postsResponse.data);
+        const extractedCategories = new Set();
+        postsResponse.data.forEach((post) => {
+          if (post.categories && Array.isArray(post.categories)) {
+            post.categories.forEach((category) =>
+              extractedCategories.add(category)
+            );
+          }
+        });
+        setCategories([...extractedCategories]);
         const commentsData = {};
         await Promise.all(
           postsResponse.data.map(async (post) => {
@@ -53,6 +68,37 @@ const ViewAllBlog = () => {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:7777/post/post/categories")
+      .then((response) => {
+        console.log("Fetched Categories:", response.data);
+        setCategories(response.data);
+      })
+      .catch((error) => console.error("Error fetching categories:", error));
+  }, []);
+
+  // Update categories and tags whenever posts change
+  useEffect(() => {
+    console.log("Posts Data:", posts);
+    const categoriesSet = new Set(posts.flatMap((post) => post.category));
+    console.log("Extracted Categories:", [...categoriesSet]);
+    const tagsSet = new Set(posts.flatMap((post) => post.tags));
+
+    setCategories([...categoriesSet]); // Convert Set to Array
+    setTags([...tagsSet]);
+  }, [posts]);
+
+  // Filter posts based on selected category and tag
+  useEffect(() => {
+    if (selectedCategory) {
+      setFilteredPosts(
+        posts.filter((post) => post.categories.includes(selectedCategory))
+      );
+    } else {
+      setFilteredPosts(posts);
+    }
+  }, [selectedCategory, posts]);
 
   // Handle comment submit
   const handleSubmitComment = async (postId) => {
@@ -85,7 +131,7 @@ const ViewAllBlog = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setPosts(posts.filter((post) => post._id !== postId));
+      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
     } catch (error) {
       setError("Error deleting post");
     }
@@ -96,6 +142,7 @@ const ViewAllBlog = () => {
     setEditingPost(post._id);
     setUpdatedTitle(post.title);
     setUpdatedContent(post.content);
+    setUpdatedTags(post.tags || []);
   };
 
   // Handle updating the post
@@ -104,13 +151,18 @@ const ViewAllBlog = () => {
       const token = localStorage.getItem("token");
       await axios.put(
         `http://127.0.0.1:7777/post/update/${postId}`,
-        { title: updatedTitle, content: updatedContent },
+        { title: updatedTitle, content: updatedContent, tags: updatedTags },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
-            ? { ...post, title: updatedTitle, content: updatedContent }
+            ? {
+                ...post,
+                title: updatedTitle,
+                content: updatedContent,
+                tags: updatedTags,
+              }
             : post
         )
       );
@@ -158,37 +210,78 @@ const ViewAllBlog = () => {
       setError("Error updating comment");
     }
   };
-const handleDeleteComment = async (commentId) => {
-  try {
-    const token = localStorage.getItem("token");
-    await axios.delete(
-      `http://127.0.0.1:7777/comment/deleteComment/${commentId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
 
-    // Remove the deleted comment from state
-    setComments((prevComments) => {
-      const updatedComments = { ...prevComments };
-      Object.keys(updatedComments).forEach((postId) => {
-        updatedComments[postId] = updatedComments[postId].filter(
-          (comment) => comment._id !== commentId
-        );
+  // Handle delete comment
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `http://127.0.0.1:7777/comment/deleteComment/${commentId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Remove the deleted comment from state
+      setComments((prevComments) => {
+        const updatedComments = { ...prevComments };
+        Object.keys(updatedComments).forEach((postId) => {
+          updatedComments[postId] = updatedComments[postId].filter(
+            (comment) => comment._id !== commentId
+          );
+        });
+        return updatedComments;
       });
-      return updatedComments;
-    });
-  } catch (error) {
-    setError("Error deleting comment");
-  }
-};
+    } catch (error) {
+      setError("Error deleting comment");
+    }
+  };
+
   if (loading) return <div className="text-center text-lg">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center">View All Blogs</h1>
-      {posts.length > 0 ? (
+
+      {/* Filtering Options */}
+      <div className="mb-6 flex flex-wrap justify-center gap-4">
+        {/* <select
+          className="p-2 border rounded"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">All Categories</option>
+          {categories.length > 0 ? (
+            categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))
+          ) : (
+            <option disabled>No Categories Available</option>
+          )}
+        </select> */}
+
+        <select
+          className="p-2 border rounded"
+          value={selectedTag}
+          onChange={(e) => setSelectedTag(e.target.value)}
+        >
+          <option value="">All Tags</option>
+          {tags.length > 0 ? (
+            tags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))
+          ) : (
+            <option disabled>No Tags Available</option>
+          )}
+        </select>
+      </div>
+
+      {filteredPosts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <div
               key={post._id}
               className="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 p-4"
@@ -208,6 +301,18 @@ const handleDeleteComment = async (commentId) => {
                     className="w-full p-2 border rounded mt-2"
                     placeholder="Edit content..."
                   ></textarea>
+                  <input
+                    type="text"
+                    value={updatedTags.join(", ")} // Convert array to string
+                    onChange={(e) =>
+                      setUpdatedTags(
+                        e.target.value.split(",").map((tag) => tag.trim())
+                      )
+                    }
+                    className="w-full p-2 border rounded mt-2"
+                    placeholder="Edit tags (comma separated)..."
+                  />
+
                   <button
                     onClick={() => handleUpdatePost(post._id)}
                     className="mt-2 p-2 bg-green-500 text-white rounded"
@@ -229,6 +334,16 @@ const handleDeleteComment = async (commentId) => {
                   </p>
                   <p className="text-sm text-gray-500">
                     <strong>Author:</strong> {post.author.name}
+                  </p>
+                  {/* <p className="text-sm text-gray-600">
+                    <strong>Category:</strong>{" "}
+                    {post.category || "Uncategorized"}
+                  </p> */}
+                  <p className="text-sm text-gray-600">
+                    <strong>Tags:</strong>{" "}
+                    {post.tags && post.tags.length > 0
+                      ? post.tags.join(", ")
+                      : "No tags"}
                   </p>
                   {user && user._id === post.author._id && (
                     <div className="flex space-x-2 mt-3">
@@ -279,7 +394,6 @@ const handleDeleteComment = async (commentId) => {
                         ) : (
                           <>
                             <strong>{comment.userId.username}</strong>{" "}
-                            
                             {comment.content}
                           </>
                         )}
