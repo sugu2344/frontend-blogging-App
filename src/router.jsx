@@ -15,6 +15,8 @@ import CreateBlogPost from "./pages/blog";
 import ViewAllBlog from "./pages/viewallblog";
 import AllUsers from "./pages/allusers";
 import GetProfile from "./pages/getprofile";
+import ForgetPassword from "./pages/forgetPassword";
+import ChangePassword from "./pages/updatepassword";
 const routes = [
   {
     path: "/",
@@ -40,6 +42,14 @@ const routes = [
       {
         path: "logout",
         element: <Logout />,
+      },
+      {
+        path: "forgotPassword",
+        element: <ForgetPassword />,
+      },
+      {
+        path: "update-password",
+        element: <ChangePassword />,
       },
       //
       {
