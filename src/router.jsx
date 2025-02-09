@@ -17,6 +17,7 @@ import AllUsers from "./pages/allusers";
 import GetProfile from "./pages/getprofile";
 import ForgetPassword from "./pages/forgetPassword";
 import ChangePassword from "./pages/updatepassword";
+import SeparateUserPosts from "./pages/seperateusers";
 const routes = [
   {
     path: "/",
@@ -77,6 +78,10 @@ const routes = [
             path: "getprofile",
             element: <GetProfile />,
           },
+          {
+            path: "currentuserpost",
+            element: <SeparateUserPosts />,
+          },
         ],
       },
       {
@@ -103,6 +108,10 @@ const routes = [
           {
             path: "getprofile",
             element: <GetProfile />,
+          },
+          {
+            path: "currentuserpost",
+            element: <SeparateUserPosts />,
           },
         ],
       },

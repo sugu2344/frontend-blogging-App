@@ -22,7 +22,12 @@ const AdminDashboard = () => {
       </div>
       <div>
         <button onClick={() => navigate("/admin/getprofile")}>
-        get profile
+          get profile
+        </button>
+      </div>
+      <div>
+        <button onClick={() => navigate("/admin/currentuserpost")}>
+        seperate user 
         </button>
       </div>
     </div>

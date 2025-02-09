@@ -33,6 +33,11 @@ const UserDashboard = () => {
       <div>
         <h1>Welcome {user?.user.name || "Guest"}</h1>
       </div>
+      <div>
+        <button onClick={() => navigate("/user/currentuserpost")}>
+          seperate user
+        </button>
+      </div>
     </div>
   );
 };
