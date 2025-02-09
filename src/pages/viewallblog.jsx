@@ -1,5 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 const ViewAllBlog = () => {
   const [posts, setPosts] = useState([]);
@@ -90,24 +102,23 @@ const ViewAllBlog = () => {
   }, [posts]);
 
   // Filter posts based on selected category and tag
- useEffect(() => {
-   let filtered = posts;
+  useEffect(() => {
+    let filtered = posts;
 
-   if (selectedCategory) {
-     filtered = filtered.filter(
-       (post) => post.categories && post.categories.includes(selectedCategory)
-     );
-   }
+    if (selectedCategory) {
+      filtered = filtered.filter(
+        (post) => post.categories && post.categories.includes(selectedCategory)
+      );
+    }
 
-   if (selectedTag) {
-     filtered = filtered.filter(
-       (post) => post.tags && post.tags.includes(selectedTag)
-     );
-   }
+    if (selectedTag) {
+      filtered = filtered.filter(
+        (post) => post.tags && post.tags.includes(selectedTag)
+      );
+    }
 
-   setFilteredPosts(filtered);
- }, [selectedCategory, selectedTag, posts]);
-
+    setFilteredPosts(filtered);
+  }, [selectedCategory, selectedTag, posts]);
 
   // Handle comment submit
   const handleSubmitComment = async (postId) => {
@@ -354,6 +365,49 @@ const ViewAllBlog = () => {
                       ? post.tags.join(", ")
                       : "No tags"}
                   </p>
+                  {/* Social Sharing Buttons */}
+                  <div className="flex space-x-2 mt-4">
+                    <FacebookShareButton
+                      url={`http://yourwebsite.com/post/${post._id}`}
+                      quote={post.title}
+                      className="hover:opacity-75"
+                    >
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                      url={`http://yourwebsite.com/post/${post._id}`}
+                      title={post.title}
+                      className="hover:opacity-75"
+                    >
+                      <TwitterIcon size={32} round />
+                    </TwitterShareButton>
+                    <LinkedinShareButton
+                      url={`http://yourwebsite.com/post/${post._id}`}
+                      title={post.title}
+                      summary={post.content.substring(0, 100)}
+                      source="YourWebsite"
+                      className="hover:opacity-75"
+                    >
+                      <LinkedinIcon size={32} round />
+                    </LinkedinShareButton>
+                    <WhatsappShareButton
+                      url={`http://yourwebsite.com/post/${post._id}`}
+                      title={post.title}
+                      separator=":: "
+                      className="hover:opacity-75"
+                    >
+                      <WhatsappIcon size={32} round />
+                    </WhatsappShareButton>
+                    <EmailShareButton
+                      url={`http://yourwebsite.com/post/${post._id}`}
+                      subject={post.title}
+                      body={post.content.substring(0, 100)}
+                      className="hover:opacity-75"
+                    >
+                      <EmailIcon size={32} round />
+                    </EmailShareButton>
+                  </div>
+
                   {user && user._id === post.author._id && (
                     <div className="flex space-x-2 mt-3">
                       <button
