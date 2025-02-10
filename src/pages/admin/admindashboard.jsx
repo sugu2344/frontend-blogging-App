@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { selectUser } from "../../redux/features/auth/userSlice";
+import { useSelector } from "react-redux";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [userCount, setUserCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
-  const [postCount, setPostCount] = useState(0); // State for post count
+  const [postCount, setPostCount] = useState(0);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
-    const fetchUserCount = async () => {
+    const fetchData = async (url, setter) => {
       try {
-        const response = await fetch("http://127.0.0.1:7777/user/usercount", {
+        const response = await fetch(url, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -20,93 +25,54 @@ const AdminDashboard = () => {
 
         const data = await response.json();
         if (response.ok) {
-          setUserCount(data.totalUsers);
+          setter(data.totalUsers || data.totalComments || data.totalPosts);
         } else {
-          console.error("Failed to fetch user count:", data.message);
+          console.error(`Failed to fetch data from ${url}:`, data.message);
         }
       } catch (error) {
-        console.error("Error fetching user count:", error);
+        console.error(`Error fetching data from ${url}:`, error);
       }
     };
 
-    const fetchCommentCount = async () => {
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:7777/comment/getTotalCommentCount",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-        if (response.ok) {
-          setCommentCount(data.totalComments);
-        } else {
-          console.error("Failed to fetch comment count:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching comment count:", error);
-      }
-    };
-
-    const fetchPostCount = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:7777/post/posts/count", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          setPostCount(data.totalPosts);
-        } else {
-          console.error("Failed to fetch post count:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching post count:", error);
-      }
-    };
-
-    fetchUserCount();
-    fetchCommentCount();
-    fetchPostCount();
+    fetchData("http://127.0.0.1:7777/user/usercount", setUserCount);
+    fetchData(
+      "http://127.0.0.1:7777/comment/getTotalCommentCount",
+      setCommentCount
+    );
+    fetchData("http://127.0.0.1:7777/post/posts/count", setPostCount);
   }, []);
 
   return (
-    <div>
-      <h2>Admin Dashboard</h2>
-      <p>Total Registered Users: {userCount}</p>
-      <p>Total Comments: {commentCount}</p>
-      <p>Total Posts: {postCount}</p> {/* Display post count */}
-      <div>
-        <button onClick={() => navigate("/admin/createblog")}>
-          Create Blog Post
-        </button>
+    <div className="min-h-screen bg-[#DAEDBD] flex flex-col items-center py-10 text-white">
+      <h1 className="text-4xl font-bold mb-10 text-black">Admin Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        {[
+          { label: "Users", value: userCount, color: "#4CAF50" },
+          { label: "Comments", value: commentCount, color: "#FF9800" },
+          { label: "Posts", value: postCount, color: "#2196F3" },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className="flex flex-col items-center bg-gray-800 p-6 rounded-2xl shadow-lg w-64"
+          >
+            <CircularProgressbar
+              value={item.value || 0}
+              text={`${item.value || 0}`}
+              styles={buildStyles({
+                textSize: "16px",
+                pathColor: item.color,
+                textColor: "#fff",
+                trailColor: "#333",
+              })}
+            />
+            <p className="mt-4 text-xl font-semibold">{item.label}</p>
+          </div>
+        ))}
       </div>
-      <div>
-        <button onClick={() => navigate("/admin/ViewAllBlogs")}>
-          All Blogs
-        </button>
-      </div>
-      <div>
-        <button onClick={() => navigate("/admin/allUsers")}>All Users</button>
-      </div>
-      <div>
-        <button onClick={() => navigate("/admin/getprofile")}>
-          Get Profile
-        </button>
-      </div>
-      <div>
-        <button onClick={() => navigate("/admin/currentuserpost")}>
-          Separate User Posts
-        </button>
+      <div className="mt-6">
+        <h1 className="text-2xl font-semibold text-gray-800">
+          Hi, {user?.user.name || "Guest"} 👋
+        </h1>
       </div>
     </div>
   );
