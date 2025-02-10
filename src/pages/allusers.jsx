@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Table, Spin, Alert, Button, Modal, List, message } from "antd";
 
@@ -11,7 +11,7 @@ const AllUsers = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [subscriptions, setSubscriptions] = useState({});
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -73,19 +73,22 @@ const AllUsers = () => {
   const handleSubscribe = async (bloggerId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.post(
+      const response = await axios.post(
         "http://127.0.0.1:7777/subscription/subscribe",
         { bloggerId, category: "General" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       message.success("Subscribed successfully!");
-      fetchSubscriptions();
+      setSubscriptions((prev) => ({
+        ...prev,
+        [bloggerId]: response.data.subscription._id,
+      }));
     } catch (err) {
       message.error("Failed to subscribe");
     }
   };
 
-  const handleUnsubscribe = async (subscriptionId) => {
+  const handleUnsubscribe = async (subscriptionId, bloggerId) => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
@@ -95,14 +98,18 @@ const AllUsers = () => {
         }
       );
       message.success("Unsubscribed successfully!");
-      fetchSubscriptions();
+      setSubscriptions((prev) => {
+        const updated = { ...prev };
+        delete updated[bloggerId];
+        return updated;
+      });
     } catch (err) {
       message.error("Failed to unsubscribe");
     }
   };
 
   const handlePostClick = (postId) => {
-    navigate(`/postDetail/${postId}`); 
+    navigate(`/postDetail/${postId}`);
   };
 
   const columns = [
@@ -133,15 +140,17 @@ const AllUsers = () => {
       key: "role",
     },
     {
-      title: "Status",
-      key: "status",
+      title: "Subscription",
+      key: "subscription",
       render: (record) => (
         <>
           {subscriptions[record._id] ? (
             <Button
               type="primary"
               danger
-              onClick={() => handleUnsubscribe(subscriptions[record._id])}
+              onClick={() =>
+                handleUnsubscribe(subscriptions[record._id], record._id)
+              }
             >
               Unsubscribe
             </Button>
