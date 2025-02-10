@@ -89,18 +89,18 @@ const ViewAllBlog = () => {
       .catch((error) => console.error("Error fetching categories:", error));
   }, []);
 
-  // Update categories and tags whenever posts change
+
   useEffect(() => {
     console.log("Posts Data:", posts);
     const categoriesSet = new Set(posts.flatMap((post) => post.category));
     console.log("Extracted Categories:", [...categoriesSet]);
     const tagsSet = new Set(posts.flatMap((post) => post.tags));
 
-    setCategories([...categoriesSet]); // Convert Set to Array
+    setCategories([...categoriesSet]);
     setTags([...tagsSet]);
   }, [posts]);
 
-  // Filter posts based on selected category and tag
+
   useEffect(() => {
     let filtered = posts;
 
