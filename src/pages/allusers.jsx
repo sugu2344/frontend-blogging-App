@@ -38,16 +38,31 @@ const AllUsers = () => {
   const fetchSubscriptions = async () => {
     try {
       const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId"); // Get logged-in user ID
       const response = await axios.get(
         "http://127.0.0.1:7777/subscription/getall",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
+      console.log("Subscriptions API Response:", response.data); // Debugging
+
+      // Check if response.data contains an array
+      const data = response.data.subscriptions || response.data; // Adjust based on API response
+      if (!Array.isArray(data)) {
+        console.error("Expected an array but got:", data);
+        return;
+      }
+
+      // Map subscriptions for the logged-in user
       const subscriptionMap = {};
-      response.data.forEach((sub) => {
-        subscriptionMap[sub.blogger] = sub._id;
+      data.forEach((sub) => {
+        if (sub.subscriber === userId) {
+          subscriptionMap[sub.blogger] = sub._id;
+        }
       });
+
       setSubscriptions(subscriptionMap);
     } catch (err) {
       console.error("Error fetching subscriptions:", err);
@@ -73,18 +88,24 @@ const AllUsers = () => {
   const handleSubscribe = async (bloggerId) => {
     try {
       const token = localStorage.getItem("token");
+      console.log("Subscribing to:", bloggerId); // Debugging
+
       const response = await axios.post(
         "http://127.0.0.1:7777/subscription/subscribe",
         { bloggerId, category: "General" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
+      console.log("Subscription Response:", response.data); // Debugging
+
       message.success("Subscribed successfully!");
       setSubscriptions((prev) => ({
         ...prev,
         [bloggerId]: response.data.subscription._id,
       }));
     } catch (err) {
-      message.error("Failed to subscribe");
+      console.error("Subscription Error:", err.response?.data || err);
+      message.error(err.response?.data?.message || "Failed to subscribe");
     }
   };
 
@@ -97,6 +118,7 @@ const AllUsers = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+
       message.success("Unsubscribed successfully!");
       setSubscriptions((prev) => {
         const updated = { ...prev };
@@ -129,16 +151,8 @@ const AllUsers = () => {
         </div>
       ),
     },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-    },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Role", dataIndex: "role", key: "role" },
     {
       title: "Subscription",
       key: "subscription",
@@ -175,7 +189,6 @@ const AllUsers = () => {
         rowKey="_id"
         pagination={false}
       />
-
       <Modal
         title={`Blogs by ${selectedUser}`}
         open={isModalVisible}
