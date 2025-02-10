@@ -31,23 +31,53 @@ const Layout = ({ children }) => {
           <div>
             {user.role === "user" && (
               <>
-                <Link to="/profile" className="mr-4">
+                {/* <Link to="/profile" className="mr-4">
                   Profile
-                </Link>
+                </Link> */}
 
                 <Link to="user/userDashboard" className="mr-4">
                   user dashboard
+                </Link>
+                <Link to="user/currentuserpost" className="mr-4">
+                  my Blogs
+                </Link>
+                <Link to="user/ViewAllBlogs" className="mr-4">
+                  All Blogs
+                </Link>
+                <Link to="user/allUsers" className="mr-4">
+                  Bloggers
+                </Link>
+                <Link to="user/createblog" className="mr-4">
+                  create Blog
+                </Link>
+                <Link to="user/getprofile" className="mr-4">
+                  profile
                 </Link>
               </>
             )}
 
             {user.role === "admin" && (
               <>
-                <Link to="/profile" className="mr-4">
+                {/* <Link to="/profile" className="mr-4">
                   Profile
-                </Link>
+                </Link> */}
                 <Link to="admin/adminDashboard" className="mr-4">
                   admin dashboard
+                </Link>
+                <Link to="admin/currentuserpost" className="mr-4">
+                  my Blogs
+                </Link>
+                <Link to="admin/ViewAllBlogs" className="mr-4">
+                  All Blogs
+                </Link>
+                <Link to="admin/allUsers" className="mr-4">
+                  Bloggers
+                </Link>
+                <Link to="admin/createblog" className="mr-4">
+                  create Blog
+                </Link>
+                <Link to="admin/getprofile" className="mr-4">
+                  profile
                 </Link>
               </>
             )}
