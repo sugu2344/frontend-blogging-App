@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [userCount, setUserCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0); // State for comment count
 
   useEffect(() => {
     const fetchUserCount = async () => {
@@ -12,7 +13,7 @@ const AdminDashboard = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure token is passed
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
@@ -27,14 +28,39 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchCommentCount = async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:7777/comment/getTotalCommentCount",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        if (response.ok) {
+          setCommentCount(data.totalComments);
+        } else {
+          console.error("Failed to fetch comment count:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching comment count:", error);
+      }
+    };
+
     fetchUserCount();
+    fetchCommentCount();
   }, []);
 
   return (
     <div>
       <h2>Admin Dashboard</h2>
       <p>Total Registered Users: {userCount}</p>
-
+      <p>Total Comments: {commentCount}</p> {/* Display comment count */}
       <div>
         <button onClick={() => navigate("/admin/createblog")}>
           Create Blog Post
