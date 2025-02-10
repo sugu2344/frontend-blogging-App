@@ -6,6 +6,7 @@ const GetProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedUser, setUpdatedUser] = useState({
     name: "",
+    email: "", 
     bio: "",
     socialLinks: { twitter: "", linkedin: "", github: "" },
   });
@@ -70,6 +71,10 @@ const GetProfile = () => {
               {user.name}
             </p>
             <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">Email:</span>{" "}
+              {user.email}
+            </p>
+            <p className="text-gray-700">
               <span className="font-semibold text-gray-900">Bio:</span>{" "}
               {user.bio || "No bio available"}
             </p>
@@ -104,6 +109,14 @@ const GetProfile = () => {
               onChange={handleChange}
               placeholder="Name"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
+            />
+            {/* Read-only email field */}
+            <input
+              type="text"
+              name="email"
+              value={updatedUser.email}
+              readOnly
+              className="w-full p-3 border border-gray-300 rounded-lg bg-gray-200 cursor-not-allowed"
             />
             <input
               type="text"
