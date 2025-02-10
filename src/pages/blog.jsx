@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import the hook
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../redux/features/auth/userSlice";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -11,7 +13,11 @@ const CreatePost = () => {
   const [categories, setCategories] = useState([]);
   const [status, setStatus] = useState("draft");
 
-  const navigate = useNavigate(); // Initialize the navigate hook
+  const navigate = useNavigate();
+  const { user } = useSelector(selectUser); // Get user data from Redux
+
+  // Get user role from Redux state
+  const userRole = user?.role || "guest"; // Default to "guest" if role is not available
 
   const handleTagsChange = (e) => {
     setTags(e.target.value.split(",").map((tag) => tag.trim()));
@@ -23,31 +29,34 @@ const CreatePost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const postData = { title, content, tags, categories, status };
+    const postData = {
+      title,
+      content,
+      tags,
+      categories,
+      status,
+      userId: user?.id,
+    };
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:7777/post/create",
-        postData,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      await axios.post("http://127.0.0.1:7777/post/create", postData, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+
+      alert("Post created successfully!");
+
+      // Navigate based on user role
+      setTimeout(() => {
+        if (userRole === "admin") {
+          navigate("/admin/ViewAllBlogs");
+        } else if (userRole === "user") {
+          navigate("/user/ViewAllBlogs");
+        } else {
+          navigate("/");
         }
-      );
-      alert("Post created successfully");
+      }, 500); // Delay for better UX after alert
 
-      // Get the user's role from localStorage or decode the token
-      const userRole = localStorage.getItem("role"); // assuming role is stored in localStorage
-
-      // Navigate to the appropriate dashboard based on the role
-      if (userRole === "admin") {
-        navigate("/admin/adminDashboard");
-      } else if (userRole === "user") {
-        navigate("/user/userDashboard");
-      } else {
-        navigate("/"); // Default to home or handle error
-      }
-
-      // Reset form
+      // Reset form fields
       setTitle("");
       setContent("");
       setTags([]);
@@ -55,14 +64,11 @@ const CreatePost = () => {
       setStatus("draft");
     } catch (error) {
       console.error("Error creating post", error);
-      if (error.response) {
-        alert(`Error: ${error.response.data.message}`);
-      } else {
-        alert("Error creating post");
-      }
+      alert(
+        error.response ? error.response.data.message : "Error creating post"
+      );
     }
   };
-
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">

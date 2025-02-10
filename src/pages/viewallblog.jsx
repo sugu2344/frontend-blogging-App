@@ -350,7 +350,7 @@ const ViewAllBlog = () => {
                 <>
                   <h2 className="text-2xl font-semibold">{post.title}</h2>
                   <p className="text-gray-600">
-                    {post.content.substring(0, 150)}...
+                    {post.content.substring(0, 2000)}...
                   </p>
                   <p className="text-sm text-gray-500">
                     <strong>Author:</strong> {post.author.name}
