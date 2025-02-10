@@ -18,7 +18,6 @@ const GetProfile = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log("User Profile:", response.data);
         setUser(response.data);
         setUpdatedUser(response.data);
       })
@@ -46,111 +45,114 @@ const GetProfile = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log("Profile updated:", response.data);
         setUser(response.data);
         setIsEditing(false);
       })
       .catch((error) => console.error("Error updating profile:", error));
   };
 
-  if (!user) return <p>Loading...</p>;
+  if (!user)
+    return (
+      <p className="text-center text-gray-500 animate-pulse">Loading...</p>
+    );
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "20px auto",
-        padding: "20px",
-        border: "1px solid #ddd",
-        borderRadius: "10px",
-      }}
-    >
-      <h2>Profile Page</h2>
+    <div className="max-w-xl mx-auto p-6 border border-gray-300 rounded-lg shadow-lg bg-white mt-10">
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+        Profile
+      </h2>
 
       {!isEditing ? (
         <>
-          <p>
-            <strong>Name:</strong> {user.name}
-          </p>
-          <p>
-            <strong>Bio:</strong> {user.bio || "No bio available"}
-          </p>
-          <p>
-            <strong>Twitter:</strong>{" "}
-            {user?.socialLinks?.twitter || "Not provided"}
-          </p>
-          <p>
-            <strong>LinkedIn:</strong>{" "}
-            {user?.socialLinks?.linkedin || "Not provided"}
-          </p>
-          <p>
-            <strong>GitHub:</strong>{" "}
-            {user?.socialLinks?.github || "Not provided"}
-          </p>
+          <div className="space-y-4">
+            <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">Name:</span>{" "}
+              {user.name}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">Bio:</span>{" "}
+              {user.bio || "No bio available"}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">Twitter:</span>{" "}
+              {user?.socialLinks?.twitter || "Not provided"}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">LinkedIn:</span>{" "}
+              {user?.socialLinks?.linkedin || "Not provided"}
+            </p>
+            <p className="text-gray-700">
+              <span className="font-semibold text-gray-900">GitHub:</span>{" "}
+              {user?.socialLinks?.github || "Not provided"}
+            </p>
+          </div>
+
           <button
             onClick={handleEdit}
-            style={{
-              padding: "8px 16px",
-              background: "blue",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              marginTop: "10px",
-            }}
+            className="w-full mt-6 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300"
           >
             Edit Profile
           </button>
         </>
       ) : (
         <>
-          <input
-            type="text"
-            name="name"
-            value={updatedUser.name}
-            onChange={handleChange}
-            placeholder="Name"
-          />
-          <input
-            type="text"
-            name="bio"
-            value={updatedUser.bio}
-            onChange={handleChange}
-            placeholder="Bio"
-          />
-          <input
-            type="text"
-            name="socialLinks.twitter"
-            value={updatedUser?.socialLinks?.twitter || ""}
-            onChange={handleChange}
-            placeholder="Twitter"
-          />
-          <input
-            type="text"
-            name="socialLinks.linkedin"
-            value={updatedUser?.socialLinks?.linkedin || ""}
-            onChange={handleChange}
-            placeholder="LinkedIn"
-          />
-          <input
-            type="text"
-            name="socialLinks.github"
-            value={updatedUser?.socialLinks?.github || ""}
-            onChange={handleChange}
-            placeholder="GitHub"
-          />
-          <button
-            onClick={handleSave}
-            style={{
-              padding: "8px 16px",
-              background: "green",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              marginTop: "10px",
-            }}
-          >
-            Save
-          </button>
+          <div className="space-y-4">
+            <input
+              type="text"
+              name="name"
+              value={updatedUser.name}
+              onChange={handleChange}
+              placeholder="Name"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
+            />
+            <input
+              type="text"
+              name="bio"
+              value={updatedUser.bio}
+              onChange={handleChange}
+              placeholder="Bio"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
+            />
+            <input
+              type="text"
+              name="socialLinks.twitter"
+              value={updatedUser?.socialLinks?.twitter || ""}
+              onChange={handleChange}
+              placeholder="Twitter"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
+            />
+            <input
+              type="text"
+              name="socialLinks.linkedin"
+              value={updatedUser?.socialLinks?.linkedin || ""}
+              onChange={handleChange}
+              placeholder="LinkedIn"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
+            />
+            <input
+              type="text"
+              name="socialLinks.github"
+              value={updatedUser?.socialLinks?.github || ""}
+              onChange={handleChange}
+              placeholder="GitHub"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all duration-300"
+            />
+          </div>
+
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={handleSave}
+              className="flex-1 px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-all duration-300"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setIsEditing(false)}
+              className="flex-1 px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition-all duration-300"
+            >
+              Cancel
+            </button>
+          </div>
         </>
       )}
     </div>
