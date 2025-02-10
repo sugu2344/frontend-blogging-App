@@ -44,37 +44,53 @@ const Register = () => {
   };
 
   return (
-    <div className="max-w-xs mx-auto mt-20 p-4 border rounded">
-      <h2 className="text-xl mb-4">Candidate Registration</h2>
-      <form className="flex flex-col space-y-3" onSubmit={handleRegister}>
-        <input
-          name="name"
-          type="text"
-          placeholder="Name"
-          className="border p-2 rounded"
-          value={name}
-          onChange={(e) => dispatch(setName(e.target.value))}
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          className="border p-2 rounded"
-          value={email}
-          onChange={(e) => dispatch(setEmail(e.target.value))}
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          className="border p-2 rounded"
-          value={password}
-          onChange={(e) => dispatch(setPassword(e.target.value))}
-        />
-        <button className="bg-blue-500 text-white py-2 rounded" type="submit">
-          Register
-        </button>
-      </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+        <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">
+          Register Here
+        </h2>
+        <form className="flex flex-col space-y-4" onSubmit={handleRegister}>
+          <input
+            name="name"
+            type="text"
+            placeholder="Name"
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={name}
+            onChange={(e) => dispatch(setName(e.target.value))}
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={email}
+            onChange={(e) => dispatch(setEmail(e.target.value))}
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={password}
+            onChange={(e) => dispatch(setPassword(e.target.value))}
+          />
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-md transition-all duration-200"
+            type="submit"
+          >
+            Register
+          </button>
+        </form>
+        <p className="text-center text-gray-600 mt-4">
+          Already have an account?{" "}
+          <span
+            className="text-blue-500 hover:underline cursor-pointer"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

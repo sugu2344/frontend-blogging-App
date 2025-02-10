@@ -5,7 +5,7 @@ import {
   setPassword,
   setEmail,
 } from "../redux/features/auth/loginSlice";
-import { setUser } from "../redux/features/auth/userSlice"; //1
+import { setUser } from "../redux/features/auth/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import authServices from "../services/authServices";
 import { useNavigate } from "react-router-dom";
@@ -20,49 +20,42 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await authServices.login({
-        email,
-        password,
-      });
-
+      const response = await authServices.login({ email, password });
       const data = response.data;
-      console.log(data);
 
       if (data.token) {
         toast.success("Logged in successfully");
 
-        // Store token in localStorage
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         dispatch(setUser(data.user));
-        // Clear input fields
         dispatch(setEmail(""));
         dispatch(setPassword(""));
 
-        console.log("User Role:", data.user?.role);
-
-        // Navigate based on role
-        if (data.user?.role === "admin") {
-          navigate("/admin/adminDashboard");
-        } else {
-          navigate("/user/userDashboard");
-        }
+        navigate(
+          data.user?.role === "admin"
+            ? "/admin/adminDashboard"
+            : "/user/userDashboard"
+        );
       } else {
-        console.log("Login failed:", data.message);
+        toast.error("Login failed");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     }
   };
+
   return (
-    <div className="max-w-xs mx-auto mt-10 bg-white p-5 rounded-md shadow-md">
-      <h2 className="text-xl mb-4">Login</h2>
-      <form className="space-y-3 flex flex-col" onSubmit={handleLogin}>
+    <div className="max-w-md mx-auto mt-16 bg-white p-6 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
+        Login
+      </h2>
+      <form className="space-y-4" onSubmit={handleLogin}>
         <input
           name="email"
           type="email"
           placeholder="Email"
-          className="p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={email}
           onChange={(e) => dispatch(setEmail(e.target.value))}
         />
@@ -70,15 +63,22 @@ const Login = () => {
           name="password"
           type="password"
           placeholder="Password"
-          className="p-2 border border-gray-300 rounded-md"
+          className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={password}
           onChange={(e) => dispatch(setPassword(e.target.value))}
         />
-        <button className="bg-blue-500 text-white p-2 rounded-md">Login</button>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition duration-300"
+        >
+          Login
+        </button>
       </form>
-      <button className="bg-blue-500 text-white p-2 px-20 mt-5 rounded-md">
-        <a href="/forgotPassword">Forgot Password</a>
-      </button>
+      <div className="text-center mt-4">
+        <a href="/forgotPassword" className="text-blue-500 hover:underline">
+          Forgot Password?
+        </a>
+      </div>
     </div>
   );
 };
