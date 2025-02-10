@@ -18,6 +18,7 @@ import GetProfile from "./pages/getprofile";
 import ForgetPassword from "./pages/forgetPassword";
 import ChangePassword from "./pages/updatepassword";
 import SeparateUserPosts from "./pages/seperateusers";
+import PostDetail from "./pages/postDetail";
 const routes = [
   {
     path: "/",
@@ -52,6 +53,11 @@ const routes = [
         path: "update-password",
         element: <ChangePassword />,
       },
+      {
+        path: "postDetail/:postId",
+        element: <PostDetail />,
+      },
+
       //
       {
         path: "user",

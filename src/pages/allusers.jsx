@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import axios from "axios";
 import { Table, Spin, Alert, Button, Modal, List, message } from "antd";
 
@@ -9,7 +10,8 @@ const AllUsers = () => {
   const [blogs, setBlogs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [subscriptions, setSubscriptions] = useState({}); // Stores subscription statuses
+  const [subscriptions, setSubscriptions] = useState({});
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     fetchUsers();
@@ -44,7 +46,7 @@ const AllUsers = () => {
       );
       const subscriptionMap = {};
       response.data.forEach((sub) => {
-        subscriptionMap[sub.blogger] = sub._id; // Map bloggerId to subscriptionId
+        subscriptionMap[sub.blogger] = sub._id;
       });
       setSubscriptions(subscriptionMap);
     } catch (err) {
@@ -71,7 +73,7 @@ const AllUsers = () => {
   const handleSubscribe = async (bloggerId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
+      await axios.post(
         "http://127.0.0.1:7777/subscription/subscribe",
         { bloggerId, category: "General" },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -97,6 +99,10 @@ const AllUsers = () => {
     } catch (err) {
       message.error("Failed to unsubscribe");
     }
+  };
+
+  const handlePostClick = (postId) => {
+    navigate(`/postDetail/${postId}`); 
   };
 
   const columns = [
@@ -171,7 +177,10 @@ const AllUsers = () => {
           <List
             dataSource={blogs}
             renderItem={(blog) => (
-              <List.Item>
+              <List.Item
+                onClick={() => handlePostClick(blog._id)}
+                style={{ cursor: "pointer" }}
+              >
                 <List.Item.Meta
                   title={blog.title}
                   description={blog.content.substring(0, 100) + "..."}
