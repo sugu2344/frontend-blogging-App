@@ -120,27 +120,30 @@ const ViewAllBlog = () => {
   }, [selectedCategory, selectedTag, posts]);
 
   // Handle comment submit
-  const handleSubmitComment = async (postId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://127.0.0.1:7777/comment/createComment",
-        { postId, content: newComment },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+const handleSubmitComment = async (postId) => {
+  try {
+    const token = localStorage.getItem("token");
+    await axios.post(
+      "http://127.0.0.1:7777/comment/createComment",
+      { postId, content: newComment[postId] }, // Fix this
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      setNewComment("");
-      const updatedComments = await axios.get(
-        `http://127.0.0.1:7777/comment/getCommentsByPost/${postId}`
-      );
-      setComments((prevComments) => ({
-        ...prevComments,
-        [postId]: updatedComments.data,
-      }));
-    } catch (error) {
-      setError("Error posting comment");
-    }
-  };
+    setNewComment((prev) => ({ ...prev, [postId]: "" })); // Clear input after submitting
+
+    // Fetch updated comments
+    const updatedComments = await axios.get(
+      `http://127.0.0.1:7777/comment/getCommentsByPost/${postId}`
+    );
+
+    setComments((prevComments) => ({
+      ...prevComments,
+      [postId]: updatedComments.data,
+    }));
+  } catch (error) {
+    setError("Error posting comment");
+  }
+};
 
   // Handle delete post
   const handleDeletePost = async (postId) => {
@@ -486,11 +489,17 @@ const ViewAllBlog = () => {
                 </ul>
 
                 <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
+                  value={newComment[post._id] || ""}
+                  onChange={(e) =>
+                    setNewComment((prev) => ({
+                      ...prev,
+                      [post._id]: e.target.value,
+                    }))
+                  }
                   className="w-full p-2 border rounded mt-2"
                   placeholder="Write a comment..."
                 ></textarea>
+
                 <button
                   onClick={() => handleSubmitComment(post._id)}
                   className="mt-2 p-2 bg-blue-500 text-white rounded"
