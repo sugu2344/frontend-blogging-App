@@ -12,7 +12,7 @@ import {
   WhatsappIcon,
   EmailIcon,
 } from "react-share";
-
+import { FaEdit, FaTrash } from "react-icons/fa";
 const ViewAllBlog = () => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState({});
@@ -426,7 +426,6 @@ const ViewAllBlog = () => {
                   )}
                 </>
               )}
-
               <div className="mt-6">
                 <h3 className="text-lg font-semibold">Comments:</h3>
                 <ul>
@@ -464,15 +463,19 @@ const ViewAllBlog = () => {
                           <div className="flex space-x-2 mt-2">
                             <button
                               onClick={() => handleEditComment(comment._id)}
-                              className="bg-yellow-500 text-white px-4 py-1 rounded"
                             >
-                              Edit
+                              <FaEdit
+                                className="text-yellow-500 hover:text-yellow-700 cursor-pointer"
+                                size={18}
+                              />
                             </button>
                             <button
                               onClick={() => handleDeleteComment(comment._id)}
-                              className="bg-red-500 text-white px-4 py-1 rounded"
                             >
-                              Delete
+                              <FaTrash
+                                className="text-red-500 hover:text-red-700 cursor-pointer"
+                                size={18}
+                              />
                             </button>
                           </div>
                         )}
