@@ -21,7 +21,7 @@ const ViewAllBlog = () => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
 
-  // State for editing posts and comments
+ 
   const [editingPost, setEditingPost] = useState(null);
   const [updatedTitle, setUpdatedTitle] = useState("");
   const [updatedContent, setUpdatedContent] = useState("");
@@ -34,7 +34,6 @@ const ViewAllBlog = () => {
   const [selectedTag, setSelectedTag] = useState("");
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
