@@ -134,7 +134,7 @@ https://github.com/user-attachments/assets/852c9845-aa4d-43b3-bf52-730edc765b98
  npm create vite@latest
 
 ```
-#### Tailwind initilation
+#### vite.config.js
 ```bash
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
