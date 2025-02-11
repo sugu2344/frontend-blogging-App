@@ -2,19 +2,19 @@ import instance from "./instance";
 const authServices = {
   //register
   register: async (data) => {
-    return await instance.post("/register", data);
+    return await instance.post("/user/register", data);
   },
   //authenticate
   login: async (data) => {
-    return await instance.post("/authenticate", data);
+    return await instance.post("user/authenticate", data);
   },
   //logout
   logout: async () => {
-    return await instance.get("/logout");
+    return await instance.get("/user/logout");
   },
   //profile
   profile: async () => {
-    return await instance.get("/profile");
+    return await instance.get("/user/profile");
   },
   // //logout
   // logout: async () => {
