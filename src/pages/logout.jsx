@@ -17,11 +17,11 @@ const Logout = () => {
         if (response.status === 200) {
           toast.success("Logged out successfully!");
 
-          // ✅ Remove user details from localStorage
+          
           localStorage.removeItem("token");
           localStorage.removeItem("user");
 
-          // ✅ Clear Redux state
+          
           dispatch(clearUser());
 
           setTimeout(() => {

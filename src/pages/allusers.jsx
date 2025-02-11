@@ -38,7 +38,7 @@ const AllUsers = () => {
   const fetchSubscriptions = async () => {
     try {
       const token = localStorage.getItem("token");
-      const userId = localStorage.getItem("userId"); // Get logged-in user ID
+      const userId = localStorage.getItem("userId"); 
       const response = await axios.get(
         "https://backend-blogging-platform.onrender.com/subscription/getall",
         {
@@ -46,16 +46,15 @@ const AllUsers = () => {
         }
       );
 
-      console.log("Subscriptions API Response:", response.data); // Debugging
+      console.log("Subscriptions API Response:", response.data); 
 
-      // Check if response.data contains an array
-      const data = response.data.subscriptions || response.data; // Adjust based on API response
+     
+      const data = response.data.subscriptions || response.data; 
       if (!Array.isArray(data)) {
         console.error("Expected an array but got:", data);
         return;
       }
 
-      // Map subscriptions for the logged-in user
       const subscriptionMap = {};
       data.forEach((sub) => {
         if (sub.subscriber === userId) {
@@ -88,7 +87,7 @@ const AllUsers = () => {
   const handleSubscribe = async (bloggerId) => {
     try {
       const token = localStorage.getItem("token");
-      console.log("Subscribing to:", bloggerId); // Debugging
+      console.log("Subscribing to:", bloggerId); 
 
       const response = await axios.post(
         "https://backend-blogging-platform.onrender.com/subscription/subscribe",
@@ -96,7 +95,7 @@ const AllUsers = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Subscription Response:", response.data); // Debugging
+      console.log("Subscription Response:", response.data); 
 
       message.success("Subscribed successfully!");
       setSubscriptions((prev) => ({

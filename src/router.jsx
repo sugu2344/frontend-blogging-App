@@ -10,7 +10,6 @@ import UserLayout from "./layouts/userlayout";
 import UserDashboard from "./pages/user/userdashboard";
 import AdminLayout from "./layouts/adminLayout";
 import AdminDashboard from "./pages/admin/admindashboard";
-// import CreatePost from "./pages/blog";
 import CreateBlogPost from "./pages/blog";
 import ViewAllBlog from "./pages/viewallblog";
 import AllUsers from "./pages/allusers";
@@ -23,7 +22,6 @@ const routes = [
   {
     path: "/",
     element: <App />,
-    // loader: authLoader,
     children: [
       {
         path: "",
@@ -58,7 +56,7 @@ const routes = [
         element: <PostDetail />,
       },
 
-      //
+      
       {
         path: "user",
         element: <UserLayout />,

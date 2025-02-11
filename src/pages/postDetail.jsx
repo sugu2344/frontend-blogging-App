@@ -11,16 +11,16 @@ const PostDetail = () => {
 
   useEffect(() => {
     fetchPost();
-  }, [postId]); // Added postId in dependency array
+  }, [postId]); 
 
   const fetchPost = async () => {
     try {
       const response = await axios.get(
-        `https://backend-blogging-platform.onrender.com/post/get/${postId}` // Fixed API endpoint
+        `https://backend-blogging-platform.onrender.com/post/get/${postId}` 
       );
       setPost(response.data);
     } catch (err) {
-      console.error("Error fetching post:", err); // Log full error
+      console.error("Error fetching post:", err); 
       setError(
         err.response?.data?.message || err.message || "Error fetching post"
       );

@@ -9,7 +9,7 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-// Set token dynamically
+
 instance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

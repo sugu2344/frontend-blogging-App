@@ -82,7 +82,7 @@ const Login = () => {
           Forgot Password?
         </button>
       </div>
-      {/* dummy */}
+     
     </div>
   );
 };

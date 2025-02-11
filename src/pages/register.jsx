@@ -28,12 +28,12 @@ const Register = () => {
       if (response.status === 201) {
         toast.success("Registered successfully");
 
-        // Clear the form
+   
         dispatch(setName(""));
         dispatch(setEmail(""));
         dispatch(setPassword(""));
 
-        // Redirect to the login page
+        
         setTimeout(() => {
           navigate("/login");
         }, 5000);

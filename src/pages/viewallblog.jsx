@@ -129,11 +129,11 @@ const handleSubmitComment = async (postId) => {
     const token = localStorage.getItem("token");
     await axios.post(
       "https://backend-blogging-platform.onrender.com/comment/createComment",
-      { postId, content: newComment[postId] }, // Fix this
+      { postId, content: newComment[postId] }, 
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    setNewComment((prev) => ({ ...prev, [postId]: "" })); // Clear input after submitting
+    setNewComment((prev) => ({ ...prev, [postId]: "" })); 
 
     // Fetch updated comments
     const updatedComments = await axios.get(
@@ -210,7 +210,7 @@ const handleSubmitComment = async (postId) => {
     setEditedComment(commentToEdit.content);
   };
 
-  // Handle updating the comment
+  
   const handleUpdateComment = async (commentId) => {
     try {
       const token = localStorage.getItem("token");
@@ -220,7 +220,7 @@ const handleSubmitComment = async (postId) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Update the comment in the state after a successful update
+      // Update the comment 
       setComments((prevComments) => {
         const updatedComments = prevComments;
         Object.keys(updatedComments).forEach((postId) => {
@@ -233,8 +233,8 @@ const handleSubmitComment = async (postId) => {
         return { ...updatedComments };
       });
 
-      setEditingCommentId(null); // Reset editing state
-      setEditedComment(""); // Clear the edit comment field
+      setEditingCommentId(null); 
+      setEditedComment("");
     } catch (error) {
       setError("Error updating comment");
     }
@@ -249,7 +249,7 @@ const handleSubmitComment = async (postId) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Remove the deleted comment from state
+    
       setComments((prevComments) => {
         const updatedComments = { ...prevComments };
         Object.keys(updatedComments).forEach((postId) => {
@@ -273,23 +273,7 @@ const handleSubmitComment = async (postId) => {
 
       {/* Filtering Options */}
       <div className="mb-6 flex flex-wrap justify-center gap-4">
-        {/* <select
-          className="p-2 border rounded"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-        >
-          <option value="">All Categories</option>
-          {categories.length > 0 ? (
-            categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))
-          ) : (
-            <option disabled>No Categories Available</option>
-          )}
-        </select> */}
-
+ 
         <select
           className="p-2 border rounded"
           value={selectedTag}
@@ -332,7 +316,7 @@ const handleSubmitComment = async (postId) => {
                   ></textarea>
                   <input
                     type="text"
-                    value={updatedTags.join(", ")} // Convert array to string
+                    value={updatedTags.join(", ")} 
                     onChange={(e) =>
                       setUpdatedTags(
                         e.target.value.split(",").map((tag) => tag.trim())
@@ -364,10 +348,7 @@ const handleSubmitComment = async (postId) => {
                   <p className="text-sm text-gray-500">
                     <strong>Author:</strong> {post.author.name}
                   </p>
-                  {/* <p className="text-sm text-gray-600">
-                    <strong>Category:</strong>{" "}
-                    {post.category || "Uncategorized"}
-                  </p> */}
+                 
                   <p className="text-sm text-gray-600">
                     <strong>Tags:</strong>{" "}
                     {post.tags && post.tags.length > 0

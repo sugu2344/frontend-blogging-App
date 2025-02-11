@@ -14,10 +14,9 @@ const CreatePost = () => {
   const [status, setStatus] = useState("draft");
 
   const navigate = useNavigate();
-  const { user } = useSelector(selectUser); // Get user data from Redux
+  const { user } = useSelector(selectUser); 
 
-  // Get user role from Redux state
-  const userRole = user?.role || "guest"; // Default to "guest" if role is not available
+  const userRole = user?.role || "guest"; 
 
   const handleTagsChange = (e) => {
     setTags(e.target.value.split(",").map((tag) => tag.trim()));
@@ -49,7 +48,6 @@ const CreatePost = () => {
 
       alert("Post created successfully!");
 
-      // Navigate based on user role
       setTimeout(() => {
         if (userRole === "admin") {
           navigate("/admin/ViewAllBlogs");
@@ -58,9 +56,8 @@ const CreatePost = () => {
         } else {
           navigate("/");
         }
-      }, 500); // Delay for better UX after alert
+      }, 500); 
 
-      // Reset form fields
       setTitle("");
       setContent("");
       setTags([]);
