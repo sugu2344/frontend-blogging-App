@@ -196,6 +196,9 @@ npm i react-circular-progressbar
 ```bash
   npm run dev
 ```
+## Deployment Url
+
+https://mernblogging-app.netlify.app/
 
 ## 🚀 About Me
 I'm a full stack developer...
