@@ -112,9 +112,11 @@ This project is a React Blogging Platform that includes user authentication, a r
 
 
 - **user dashboard**
+
 https://github.com/user-attachments/assets/9b34d327-a018-4695-9b0d-b8f565aebdc8
 
 - **admin dashboard**
+
 https://github.com/user-attachments/assets/852c9845-aa4d-43b3-bf52-730edc765b98
 
 # Installation
