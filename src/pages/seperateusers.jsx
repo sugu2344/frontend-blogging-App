@@ -18,7 +18,7 @@ const SeparateUserPosts = () => {
         }
 
         const response = await axios.get(
-          "http://127.0.0.1:7777/post/currentuser",
+          "https://backend-blogging-platform.onrender.com/post/currentuser",
           {
             headers: { Authorization: `Bearer ${token}` },
           }

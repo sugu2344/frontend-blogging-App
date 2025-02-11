@@ -22,7 +22,7 @@ const AllUsers = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://127.0.0.1:7777/user/getallusers",
+        "https://backend-blogging-platform.onrender.com/user/getallusers",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -40,7 +40,7 @@ const AllUsers = () => {
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("userId"); // Get logged-in user ID
       const response = await axios.get(
-        "http://127.0.0.1:7777/subscription/getall",
+        "https://backend-blogging-platform.onrender.com/subscription/getall",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -73,7 +73,7 @@ const AllUsers = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://127.0.0.1:7777/post/user/${userId}`
+        `https://backend-blogging-platform.onrender.com/post/user/${userId}`
       );
       setBlogs(response.data);
       setSelectedUser(userName);
@@ -91,7 +91,7 @@ const AllUsers = () => {
       console.log("Subscribing to:", bloggerId); // Debugging
 
       const response = await axios.post(
-        "http://127.0.0.1:7777/subscription/subscribe",
+        "https://backend-blogging-platform.onrender.com/subscription/subscribe",
         { bloggerId, category: "General" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -113,7 +113,7 @@ const AllUsers = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://127.0.0.1:7777/subscription/unsubscribe/${subscriptionId}`,
+        `https://backend-blogging-platform.onrender.com/subscription/unsubscribe/${subscriptionId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

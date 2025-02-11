@@ -16,7 +16,7 @@ const PostDetail = () => {
   const fetchPost = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:7777/post/get/${postId}` // Fixed API endpoint
+        `https://backend-blogging-platform.onrender.com/post/get/${postId}` // Fixed API endpoint
       );
       setPost(response.data);
     } catch (err) {

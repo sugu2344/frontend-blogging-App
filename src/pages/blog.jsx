@@ -39,9 +39,13 @@ const CreatePost = () => {
     };
 
     try {
-      await axios.post("http://127.0.0.1:7777/post/create", postData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      await axios.post(
+        "https://backend-blogging-platform.onrender.com/post/create",
+        postData,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
 
       alert("Post created successfully!");
 

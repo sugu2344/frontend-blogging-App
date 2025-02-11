@@ -14,9 +14,12 @@ const ForgetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://127.0.0.1:7777/user/reset", {
-        email,
-      });
+      const response = await axios.post(
+        "https://backend-blogging-platform.onrender.com/user/reset",
+        {
+          email,
+        }
+      );
       setMessage(response.data.message);
       setTimeout(() => {
         navigate("/update-password");

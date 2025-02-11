@@ -15,7 +15,7 @@ const GetProfile = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:7777/user/getprofile", {
+      .get("https://backend-blogging-platform.onrender.com/user/getprofile", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -42,9 +42,13 @@ const GetProfile = () => {
 
   const handleSave = () => {
     axios
-      .put("http://127.0.0.1:7777/user/updateProfile", updatedUser, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .put(
+        "https://backend-blogging-platform.onrender.com/user/updateProfile",
+        updatedUser,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((response) => {
         setUser(response.data);
         setIsEditing(false);

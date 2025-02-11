@@ -40,7 +40,7 @@ const ViewAllBlog = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const userResponse = await axios.get(
-            "http://127.0.0.1:7777/user/profile",
+            "https://backend-blogging-platform.onrender.com/user/profile",
             {
               headers: { Authorization: `Bearer ${token}` },
             }
@@ -48,7 +48,9 @@ const ViewAllBlog = () => {
           setUser(userResponse.data);
         }
 
-        const postsResponse = await axios.get("http://127.0.0.1:7777/post/get");
+        const postsResponse = await axios.get(
+          "https://backend-blogging-platform.onrender.com/post/get"
+        );
         setPosts(postsResponse.data);
         setFilteredPosts(postsResponse.data);
         const extractedCategories = new Set();
@@ -64,7 +66,7 @@ const ViewAllBlog = () => {
         await Promise.all(
           postsResponse.data.map(async (post) => {
             const commentsResponse = await axios.get(
-              `http://127.0.0.1:7777/comment/getCommentsByPost/${post._id}`
+              `https://backend-blogging-platform.onrender.com/comment/getCommentsByPost/${post._id}`
             );
             commentsData[post._id] = commentsResponse.data;
           })
@@ -81,7 +83,9 @@ const ViewAllBlog = () => {
   }, []);
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:7777/post/post/categories")
+      .get(
+        "https://backend-blogging-platform.onrender.com/post/post/categories"
+      )
       .then((response) => {
         console.log("Fetched Categories:", response.data);
         setCategories(response.data);
@@ -124,7 +128,7 @@ const handleSubmitComment = async (postId) => {
   try {
     const token = localStorage.getItem("token");
     await axios.post(
-      "http://127.0.0.1:7777/comment/createComment",
+      "https://backend-blogging-platform.onrender.com/comment/createComment",
       { postId, content: newComment[postId] }, // Fix this
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -133,7 +137,7 @@ const handleSubmitComment = async (postId) => {
 
     // Fetch updated comments
     const updatedComments = await axios.get(
-      `http://127.0.0.1:7777/comment/getCommentsByPost/${postId}`
+      `https://backend-blogging-platform.onrender.com/comment/getCommentsByPost/${postId}`
     );
 
     setComments((prevComments) => ({
@@ -149,9 +153,12 @@ const handleSubmitComment = async (postId) => {
   const handleDeletePost = async (postId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://127.0.0.1:7777/post/delete/${postId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://backend-blogging-platform.onrender.com/post/delete/${postId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
     } catch (error) {
@@ -172,7 +179,7 @@ const handleSubmitComment = async (postId) => {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        `http://127.0.0.1:7777/post/update/${postId}`,
+        `https://backend-blogging-platform.onrender.com/post/update/${postId}`,
         { title: updatedTitle, content: updatedContent, tags: updatedTags },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -208,7 +215,7 @@ const handleSubmitComment = async (postId) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://127.0.0.1:7777/comment/updateComment/${commentId}`,
+        `https://backend-blogging-platform.onrender.com/comment/updateComment/${commentId}`,
         { content: editedComment },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -238,7 +245,7 @@ const handleSubmitComment = async (postId) => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://127.0.0.1:7777/comment/deleteComment/${commentId}`,
+        `https://backend-blogging-platform.onrender.com/comment/deleteComment/${commentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

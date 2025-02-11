@@ -34,12 +34,18 @@ const AdminDashboard = () => {
       }
     };
 
-    fetchData("http://127.0.0.1:7777/user/usercount", setUserCount);
     fetchData(
-      "http://127.0.0.1:7777/comment/getTotalCommentCount",
+      "https://backend-blogging-platform.onrender.com/user/usercount",
+      setUserCount
+    );
+    fetchData(
+      "https://backend-blogging-platform.onrender.com/comment/getTotalCommentCount",
       setCommentCount
     );
-    fetchData("http://127.0.0.1:7777/post/posts/count", setPostCount);
+    fetchData(
+      "https://backend-blogging-platform.onrender.com/post/posts/count",
+      setPostCount
+    );
   }, []);
 
   return (

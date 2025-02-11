@@ -12,10 +12,13 @@ const ChangePassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://127.0.0.1:7777/user/change`, {
-        code,
-        password,
-      });
+      const response = await axios.put(
+        `https://backend-blogging-platform.onrender.com/user/change`,
+        {
+          code,
+          password,
+        }
+      );
       setMessage(response.data.message);
       setError("");
       setTimeout(() => navigate("/"), 2000);
