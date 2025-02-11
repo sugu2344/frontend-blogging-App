@@ -77,6 +77,7 @@ const Login = () => {
       <button className="bg-blue-500 w-full text-white p-2 px-20 mt-5 rounded-md">
         <a href="/forgotPassword">Forgot Password</a>
       </button>
+      {/* dummy */}
     </div>
   );
 };
