@@ -86,6 +86,9 @@ This project is a React Blogging Platform that includes user authentication, a r
 #### Blogs Page
 ![all blogs page](https://github.com/user-attachments/assets/a0b491a5-e08f-46f5-b578-0dbddb29408e)
 
+#### social sharing
+![ssocial sharing enabled](https://github.com/user-attachments/assets/5beaebf8-2dbe-4c18-ab4e-ffd36ee6e51b)
+
 #### Create blog using Text editor
 ![create blog post page ](https://github.com/user-attachments/assets/90628930-c2d5-4194-afc9-1140851b4eaa)
 
@@ -131,7 +134,7 @@ https://github.com/user-attachments/assets/852c9845-aa4d-43b3-bf52-730edc765b98
  npm create vite@latest
 
 ```
-#### Tailwind initilation
+#### vite.config.js
 ```bash
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
